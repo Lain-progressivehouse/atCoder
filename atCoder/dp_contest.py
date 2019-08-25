@@ -1,3 +1,8 @@
+"""
+A問題: Frog 1
+"""
+
+
 def p_a():
     N = int(input())
     H = list(map(int, input().split()))
@@ -20,6 +25,11 @@ def p_a():
     print(ans)
 
 
+"""
+B問題: Frog 2
+"""
+
+
 def p_b():
     N, K = map(int, input().split())
     H = list(map(int, input().split()))
@@ -31,6 +41,11 @@ def p_b():
             ans[i] = min(ans[i], ans[j] + abs(H[j] - H[i]))
 
     print(ans[-1])
+
+
+"""
+c問題: Vacation
+"""
 
 
 def p_c():
@@ -47,10 +62,12 @@ def p_c():
     print(max(abc))
 
 
+"""
+D問題: Knapsack 1
+"""
+
+
 def p_d():
-    """
-    ナップサック問題
-    """
     N, W = map(int, input().split())
     dp = [0] * (W + 1)
     for i in range(1, N + 1):
@@ -66,10 +83,12 @@ def p_d():
     print(max(NEXT))
 
 
+"""
+E問題: Knapsack 2（Wが大きいがvが小さい版）
+"""
+
+
 def p_e():
-    """
-    ナップサック問題（Wが大きいがvが小さい版）
-    """
     N, W = map(int, input().split())
     max_value = 10 ** 3 * N + 1
     dp = [W + 1] * max_value

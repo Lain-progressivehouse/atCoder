@@ -111,5 +111,44 @@ def p_e():
     print(ans)
 
 
+"""
+F問題: LCS
+"""
+def p_f():
+    S = input()
+    T = input()
+    s_n = len(S)
+    t_n = len(T)
+    dp = [[0] * (s_n + 1) for _ in range(t_n + 1)]
+
+    for i in range(1, t_n + 1):
+        f = False
+        for j in range(1, s_n + 1):
+            if S[j - 1] == T[i - 1]:
+                f = True
+                dp[i][j] = max(dp[i - 1][j - 1] + 1, dp[i - 1][j])
+                continue
+
+            if f:
+                dp[i][j] = max(dp[i][j - 1], dp[i - 1][j])
+            else:
+                dp[i][j] = dp[i - 1][j]
+
+    ans = ""
+    while s_n > 0 and t_n > 0:
+        if dp[t_n - 1][s_n] == dp[t_n][s_n]:
+            t_n -= 1
+
+        if dp[t_n][s_n - 1] == dp[t_n][s_n]:
+            s_n -= 1
+
+        if dp[t_n - 1][s_n] != dp[t_n][s_n] and dp[t_n][s_n - 1] != dp[t_n][s_n]:
+            ans = S[s_n - 1] + ans
+            s_n -= 1
+            t_n -= 1
+
+    print(ans)
+
+
 if __name__ == '__main__':
-    p_e()
+    p_f()

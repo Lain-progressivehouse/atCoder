@@ -114,6 +114,8 @@ def p_e():
 """
 F問題: LCS
 """
+
+
 def p_f():
     S = input()
     T = input()

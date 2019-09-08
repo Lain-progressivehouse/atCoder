@@ -152,5 +152,30 @@ def p_f():
     print(ans)
 
 
+"""
+G問題: Longest Path
+"""
+
+
+def p_g():
+    N, M = map(int, input().split())
+    from collections import defaultdict
+    lf = defaultdict(list)
+    lb = defaultdict(list)
+    L = []
+    for _ in range(M):
+        x, y = map(int, input().split())
+        lf[x].append(y)
+        lb[y].append(x)
+        L.append((x,y))
+
+    # lfのkeyに存在しない→終端
+    print(lf)
+    # lbのkeyに存在しない→先端
+    print(lb)
+
+    print(L)
+
+
 if __name__ == '__main__':
-    p_f()
+    p_g()

@@ -47,7 +47,7 @@ def p_d():
 def p_e():
     N, M = map(int, input().split())
     max_value = (10 ** 5) * 12 + 1
-    dp_len = 2 ** N
+    dp_len = 1 << N
     dp = [max_value] * dp_len
     dp[0] = 0
     for _ in range(M):

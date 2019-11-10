@@ -4,10 +4,11 @@ def p_a():
 
 
 def p_b():
-    r,d,x = map(int, input().split())
+    r, d, x = map(int, input().split())
     for _ in range(10):
         x = r * x - d
         print(x)
+
 
 def p_c():
     n, m = map(int, input().split())
@@ -21,6 +22,7 @@ def p_c():
 
 
 from heapq import heappop, heappush, heapify
+
 
 def p_d():
     n, m = map(int, input().split())
@@ -37,6 +39,7 @@ def p_d():
                 exit()
             heappush(h, c)
     print(sum(h))
+
 
 def p_e():
     pass

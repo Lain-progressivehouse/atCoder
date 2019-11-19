@@ -155,27 +155,104 @@ def p_f():
 """
 G問題: Longest Path
 """
+# メモ化再帰, 再帰回数の上限を上げる必要がある
+import sys
+
+
+def recursion_g(eges, length, f):
+    if length[f] != -1:
+        return length[f]
+    memo = [0]
+    for t in eges[f]:
+        memo.append(recursion_g(eges, length, t) + 1)
+    length[f] = max(memo)
+    return length[f]
 
 
 def p_g():
+    sys.setrecursionlimit(10 ** 6)
     N, M = map(int, input().split())
-    from collections import defaultdict
-    lf = defaultdict(list)
-    lb = defaultdict(list)
-    L = []
+    edges = [[] for _ in range(N)]
+    # 各ノードのlengthのメモ
+    length = [-1] * N
     for _ in range(M):
         x, y = map(int, input().split())
-        lf[x].append(y)
-        lb[y].append(x)
-        L.append((x,y))
+        edges[x - 1].append(y - 1)
 
-    # lfのkeyに存在しない→終端
-    print(lf)
-    # lbのkeyに存在しない→先端
-    print(lb)
+    for i in range(N):
+        recursion_g(edges, length, i)
+    print(max(length))
 
-    print(L)
+
+# トポロジカルソートしつつDP
+from collections import deque
+
+
+def p_g_dp():
+    N, M = map(int, input().split())
+    outs = [[] for _ in range(N)]
+    ins = [0] * N
+    for _ in range(M):
+        f, t = map(int, input().split())
+        outs[f - 1].append(t - 1)
+        ins[t - 1] += 1
+    q = deque(t for t in range(N) if ins[t] == 0)
+    res = []
+    dp = [0] * N
+    while q:
+        f = q.popleft()
+        res.append(f)
+        for t in outs[f]:
+            ins[t] -= 1
+            if ins[t] == 0:
+                q.append(t)
+                dp[t] = max(dp[t], dp[f] + 1)
+    print(max(dp))
+
+
+"""
+H問題: Grid1
+"""
+
+
+def p_h():
+    h, w = map(int, input().split())
+    dp = []
+    for _ in range(h):
+        dp.append(list(map(int, input().replace(".", "0 ").replace("#", "-1 ").split())))
+    dp[0][0] = 1
+    mod = 10 ** 9 + 7
+
+    for i in range(h):
+        for j in range(w):
+            if j < w - 1 and dp[i][j + 1] != -1 and dp[i][j] != -1:
+                dp[i][j + 1] += dp[i][j]
+                dp[i][j + 1] %= mod
+            if i < h - 1 and dp[i + 1][j] != -1 and dp[i][j] != -1:
+                dp[i + 1][j] += dp[i][j]
+                dp[i + 1][j] %= mod
+
+    print(dp[-1][-1])
+
+
+"""
+I問題: Coins
+"""
+
+
+def p_i():
+    n = int(input())
+    *p, = map(float, input().split())
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+    dp[0][0] = 1
+
+    for i in range(n):
+        for j in range(n):
+            dp[i + 1][j + 1] += dp[i][j] * p[i]
+            dp[i + 1][j] += dp[i][j] * (1 - p[i])
+
+    print(sum(dp[-1][(n + 1) // 2:]))
 
 
 if __name__ == '__main__':
-    p_g()
+    p_i()

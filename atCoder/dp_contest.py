@@ -260,8 +260,57 @@ J問題: Sushi
 """
 
 
+def recursion_j(n, dp, i, j, k):
+    if dp[i][j][k] > 0:
+        return dp[i][j][k]
+    if i == j == k == 0:
+        return 0.0
+
+    res = 0.0
+    if i > 0:
+        res += recursion_j(n, dp, i - 1, j, k) * i
+    if j > 0:
+        res += recursion_j(n, dp, i + 1, j - 1, k) * j
+    if k > 0:
+        res += recursion_j(n, dp, i, j + 1, k - 1) * k
+    res += n
+    res *= 1 / (i + j + k)
+    dp[i][j][k] = res
+    return res
+
+
 def p_j():
-    pass
+    n = int(input())
+    *a, = map(int, input().split())
+    c = [0] * 3
+    for a_ in a:
+        c[a_ - 1] += 1
+    dp = [[[0.0] * (n + 1) for _ in range(n + 1)] for _ in range(n + 1)]
+    print(recursion_j(n, dp, c[0], c[1], c[2]))
+
+
+def p_j_dp():
+    n = int(input())
+    *a, = map(int, input().split())
+    c1 = a.count(1)
+    c2 = a.count(2)
+    c3 = a.count(3)
+    dp = [[[0.0] * (n + 1) for _ in range(n + 1)] for _ in range(n + 1)]
+    for k in range(c3 + 1):
+        for j in range(c3 + c2 + 1 - k):
+            for i in range(n + 1 - k - j):
+                if i + j + k == 0:
+                    continue
+                res = n
+                if i > 0:
+                    res += i * dp[i - 1][j][k]
+                if j > 0:
+                    res += j * dp[i + 1][j - 1][k]
+                if k > 0:
+                    res += k * dp[i][j + 1][k - 1]
+                res /= i + j + k
+                dp[i][j][k] = res
+    print(dp[c1][c2][c3])
 
 
 """
@@ -282,4 +331,4 @@ def p_k():
 
 
 if __name__ == '__main__':
-    p_k()
+    p_j_dp()

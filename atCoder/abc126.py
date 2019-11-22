@@ -34,11 +34,73 @@ def p_c():
 
 
 def p_d():
-    pass
+    from sys import stdin
+    input = stdin.readline
+    import sys
+    sys.setrecursionlimit(10 ** 6)
+    n = int(input())
+    route = [[] for _ in range(n)]
+    for _ in range(n - 1):
+        u, v, w = map(int, input().split())
+        w = 0 if w & 1 == 0 else 1
+        route[u - 1].append((v - 1, w))
+        route[v - 1].append((u - 1, w))
+
+    ans = [-1] * n
+
+    def dfs(p, d):
+        ans[p] = d
+        for i, j in route[p]:
+            if ans[i] < 0:
+                dfs(i, d ^ j)
+
+    dfs(0, 0)
+    print("\n".join(map(str, ans)))
+
+
+class UnionFind:
+    def __init__(self, n):
+        self.par = list(range(n))
+        self.rank = [0] * n
+        self.size = [1] * n
+
+    def find(self, x):
+        if self.par[x] == x:
+            return x
+        self.par[x] = self.find(self.par[x])
+        return self.par[x]
+
+    def unite(self, x, y):
+        x = self.find(x)
+        y = self.find(y)
+        if x == y:
+            return
+        if self.rank[x] < self.rank[y]:
+            self.par[x] = y
+            x, y = y, x
+        else:
+            self.par[y] = x
+            if self.rank[x] == self.rank[y]:
+                self.rank[x] += 1
+        self.size[x] += self.size[y]
+
+    def same(self, x, y):
+        return self.find(x) == self.find(y)
+
+    def get_size(self, x):
+        return self.size[self.find(x)]
 
 
 def p_e():
-    pass
+    n, m = map(int, input().split())
+    uf = UnionFind(n)
+    for _ in range(m):
+        x, y, z = map(int, input().split())
+        uf.unite(x - 1, y - 1)
+    ans = set()
+    for i in range(n):
+        ans.add(uf.find(i))
+    print(len(ans))
 
 
 def p_f():
@@ -46,4 +108,4 @@ def p_f():
 
 
 if __name__ == '__main__':
-    p_c()
+    p_e()

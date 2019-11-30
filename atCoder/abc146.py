@@ -15,61 +15,90 @@ def p_b():
 
 def p_c():
     a, b, x = map(int, input().split())
-    i = min((x + a) // a, 100000000)
-    ans = a * i + b * len(str(i))
-    i -= (ans-x)//a+10
-    for j in reversed(range(1, i+1)):
-        ans = a * j + b * len(str(j))
-        if ans < x:
-            if ans < 1000000000:
-                print(j)
-            else:
-                print(1000000000)
-            exit()
-    print(0)
-
+    m = 1
+    M = 10 ** 9
+    while m <= M:
+        mid = (m + M) // 2
+        ans = a * mid + b * len(str(mid))
+        if ans > x:
+            M = mid - 1
+        else:
+            m = mid + 1
+    print(mid if ans <= x else mid - 1)
 
 
 def p_d():
     n = int(input())
     t = [[] for _ in range(n)]
-    for _ in range(n - 1):
+    for i in range(n - 1):
         a, b = map(int, input().split())
-        t[a - 1].append(b - 1)
-        t[b - 1].append(a - 1)
-    num = 0
-    t_size = []
-    for i in range(n):
-        num = max(num, len(t[i]))
-        t_size.append((len(t[i]), i))
-    t_size.sort(reverse=True)
-    # print(num)
-    # print(t_size)
-    # print(t)
-    color = [-1] * n
-    for size, i in t_size:
-        if size == 1:
-            continue
-        li = []
-        for j in t[i]:
-            if color[j] != -1:
-                li.append(color[j])
-                continue
-            for k in range(1, num + 1):
-                if k not in li:
-                    color[j] = k
-                    li.append(k)
-                    break
-    print("\n".join(map(str, color)))
+        t[a - 1].append((i, b - 1))
+    q = [(0, -1)]
+    ans = [-1] * (n - 1)
+    while q:
+        print(ans)
+        x, c0 = q.pop()
+        c = 1
+        for i, y in t[x]:
+            if c == c0:
+                c += 1
+            ans[i] = c
+            q.append((y, c))
+            c += 1
+    print(max(ans))
+    for a in ans:
+        print(a)
+
+
+"""
+E問題: 各要素の累積和の-1のmod kを計算することで
+kまでの範囲で同じ値が存在する数の分だけansに追加する
+"""
+
+from collections import deque
+from collections import defaultdict
 
 
 def p_e():
-    pass
+    n, k = map(int, input().split())
+    a = [0] + list(map(int, input().split()))
+    for i in range(n):
+        a[i + 1] = (a[i + 1] + a[i] - 1) % k
+    d = defaultdict(int)
+    d[0] = 1
+    q = deque()
+    ans = 0
+    for i in range(1, n + 1):
+        if i - k >= 0:
+            d[a[i - k]] -= 1
+        ans += d[a[i]]
+        d[a[i]] += 1
+    print(ans)
+
+
+"""
+F問題: reverseして貪欲にすれば辞書順になる
+"""
 
 
 def p_f():
-    pass
+    n, m = map(int, input().split())
+    *s, = map(int, input())
+    s.reverse()
+    i = 0
+    ans = []
+    while i + m < n:
+        for j in reversed(range(i + 1, i + m + 1)):
+            if s[j] == 0:
+                ans.append(j - i)
+                i = j
+                break
+        else:
+            print(-1)
+            exit()
+    ans.append(n - i)
+    print(*reversed(ans))
 
 
 if __name__ == '__main__':
-    p_c()
+    p_f()

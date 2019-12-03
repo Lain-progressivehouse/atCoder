@@ -371,5 +371,41 @@ def p_l_2():
     print(dp[0][n - 1])
 
 
+"""
+M問題: Candies
+"""
+
+
+def p_m():
+    n, k = map(int, input().split())
+    *a, = map(int, input().split())
+    mod = 10 ** 9 + 7
+    # dp[i][j]はi番目の子にj個の飴を配る方法が何通りかどうか
+    dp = [[0] * (k + 1) for _ in range(n + 1)]
+    for i in range(n + 1):
+        dp[i][0] = 1
+
+    for i in range(1, n + 1):
+        for j in range(1, k + 1):
+            if j - 1 - a[i - 1] >= 0:
+                dp[i][j] = (dp[i - 1][j] + dp[i][j - 1] - dp[i - 1][j - 1 - a[i - 1]]) % mod
+            else:
+                dp[i][j] = (dp[i - 1][j] + dp[i][j - 1]) % mod
+    print(dp[n][k])
+
+
+def p_n():
+    from itertools import accumulate
+    n = int(input())
+    *a, = map(int, input().split())
+    ac = list(accumulate(a)) + [0]
+    dp = [[0] * (n + 1) for _ in range(n + 1)]
+    for i in range(2, n + 1):
+        for j in range(n - i + 1):
+            dp[i][j] = ac[j + i - 1] - ac[j - 1] + min(dp[k][j] + dp[i - k][j + k] for k in range(1, i))
+    print(dp)
+    print(dp[-1][0])
+
+
 if __name__ == '__main__':
-    p_l_2()
+    p_n()

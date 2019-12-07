@@ -402,6 +402,7 @@ def p_n():
     dp = [[0] * (n + 1) for _ in range(n + 1)]
     for i in range(2, n + 1):
         for j in range(n - i + 1):
+            print(ac[j + i - 1] - ac[j - 1] + min(dp[k][j] + dp[i - k][j + k] for k in range(1, i)))
             dp[i][j] = ac[j + i - 1] - ac[j - 1] + min(dp[k][j] + dp[i - k][j + k] for k in range(1, i))
     print(dp)
     print(dp[-1][0])

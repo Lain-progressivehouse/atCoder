@@ -57,42 +57,41 @@ def p_d():
     print(ans)
 
 
-from collections import defaultdict
+def bellman_ford(edges, num_v, start, end):
+    """
+    ベルマンフォード法
+    :param edges: (from, to, cost)のリスト
+    :param num_v: 頂点の数
+    :param start: 始点
+    :param end: 終点
+    :return: 最小コスト
+    """
+    inf = float("inf")
+    dist = [inf] * num_v
+    dist[start - 1] = 0
+    ans = -1
+
+    for i in range(num_v * 2):
+        for edge in edges:
+            if dist[edge[1] - 1] > dist[edge[0] - 1] + edge[2]:
+                dist[edge[1] - 1] = dist[edge[0] - 1] + edge[2]
+                if i > num_v:
+                    dist[edge[1] - 1] = inf
+        if i == num_v - 1:
+            ans = dist[end - 1]
+    if dist[-1] != ans or dist[-1] == -inf:
+        return -1
+    return max(dist[-1], 0)
 
 
 def p_e():
     N, M, P = map(int, input().split())
-    abc = [tuple(map(int, input().split())) for _ in range(M)]
-    li = defaultdict(set)
-
-    for i in range(M):
-        li[abc[i][0]].append((abc[i][1], -(abc[i][2] - P)))
-
-    li_ans = defaultdict()
-    li_ans[1] = 0
-    li_top = [1]
-    lt = []
-    bf_n = -1
-    while li_top and li_top != lt:
-        lt = li_top.copy()
-        li_top = []
-        if N in li_ans.keys():
-            bf_n = li_ans[N]
-
-        for i in lt:
-            for e in li[i]:
-                if not e[0] in li_ans.keys():
-                    li_ans[e[0]] = e[1] + li_ans[i]
-                    li_top.append(e[0])
-                else:
-                    if li_ans[e[0]] > e[1] + li_ans[i]:
-                        li_ans[e[0]] = e[1] + li_ans[i]
-                        li_top.append(e[0])
-
-    if li_top == lt and bf_n != li_ans[N]:
-        print(-1)
-    else:
-        print(max(0, -li_ans[N]))
+    edges = []
+    for _ in range(M):
+        a, b, c = map(int, input().split())
+        edges.append((a, b, c - P))
+    ans = bellman_ford(edges, N, 1, N)
+    print(ans)
 
 
 if __name__ == '__main__':

@@ -61,10 +61,14 @@ def p_e():
     ma = ab[-1][0]
     dp = [0] * (t + ma)
     for w, v in ab:
-        for j in range(t):
-            next[min(t, j + w)] = max(dp[j] + v, dp[min(t, j + w)])
+        next = [0] * (t + ma)
+        for j in range(1, t + ma):
+            if 0 <= j - w < t:
+                next[j] = max(dp[j - w] + v, dp[j])
+            else:
+                next[j] = dp[j]
         dp = next
-    print(dp[-1])
+    print(max(dp))
 
 
 def p_f():

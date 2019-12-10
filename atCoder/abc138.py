@@ -87,6 +87,7 @@ def p_e():
 
 
 def p_f():
+    from itertools import product
     L, R = map(int, input().split())
     mod = 10 ** 9 + 7
     # dp[i][j][k][l]: iは桁, jはL<=xか, kはy<=Rか, lは桁数が同じか
@@ -96,39 +97,35 @@ def p_f():
         # LとRのiビット目を取り出す
         lb = L >> i & 1
         rb = R >> i & 1
-        for j in range(2):
-            for k in range(2):
-                for l in range(2):
-                    # 前の状態
-                    pre = dp[i + 1][j][k][l]
-                    for x in range(2):
-                        for y in range(2):
-                            nj, nk, nl = j, k, l
-                            if x and (not y):  # xが1でyが0
-                                continue
-                            if (not l) and x != y:
-                                continue
-                            if x and y:
-                                nl = 1
-                            # j: L <= x
-                            if (not j) and (not x) and lb:
-                                continue
-                            if x and (not lb):
-                                nj = 1
-                            # k: y <= R
-                            if (not k) and y and (not rb):
-                                continue
-                            if (not y) and rb:
-                                nk = 1
-                            dp[i][nj][nk][nl] += pre
+        for j, k, l in product(range(2), repeat=3):
+            # 前の状態
+            pre = dp[i + 1][j][k][l]
+            for x, y in product(range(2), repeat=2):
+                nj, nk, nl = j, k, l
+                if x and (not y):  # xが1でyが0
+                    continue
+                if (not l) and x != y:
+                    continue
+                if x and y:
+                    nl = 1
+                # j: L <= x
+                if (not j) and (not x) and lb:
+                    continue
+                if x and (not lb):
+                    nj = 1
+                # k: y <= R
+                if (not k) and y and (not rb):
+                    continue
+                if (not y) and rb:
+                    nk = 1
+                dp[i][nj][nk][nl] += pre
 
     ans = 0
-    for j in range(2):
-        for k in range(2):
-            for l in range(2):
-                ans += dp[0][j][k][l]
-                ans %= mod
+    for j, k, l in product(range(2), repeat=3):
+        ans += dp[0][j][k][l]
+        ans %= mod
     print(ans)
+
 
 if __name__ == '__main__':
     p_f()

@@ -56,40 +56,35 @@ def p_d():
     print(ans)
 
 
-def p_e():
-    h, w = map(int, input().split())
-    t = [list(map(int, input().split())) for _ in range(h)]
-    m = 0
-    for i in range(h):
-        *b, = map(int, input().split())
-        for j, e in enumerate(b):
-            t[i][j] = abs(t[i][j] - e)
-            if m < abs(t[i][j] - e):
-                m = abs(t[i][j] - e)
+"""
+bool値でDPするならbitの1,0をtrue,falseで判定すれば纏めて処理ができて早い
+"""
 
-    # dp[i][j][k]: (i,j)でkになるかどうかbool値
-    bool_width = m * (h + w)
-    dp = [[[False] * bool_width for _ in range(w)] for _ in range(h)]
-    for i in range(h):
-        for j in range(w):
-            if i == j == 0:
-                dp[i][j][t[i][j]] = True
-                continue
-            for k in range(bool_width):
-                if i > 0:
-                    if abs(k + t[i][j]) < bool_width:
-                        dp[i][j][k] |= dp[i - 1][j][abs(k + t[i][j])]
-                    if abs(k - t[i][j]) < bool_width:
-                        dp[i][j][k] |= dp[i - 1][j][abs(k - t[i][j])]
-                if j > 0:
-                    if abs(k + t[i][j]) < bool_width:
-                        dp[i][j][k] |= dp[i][j - 1][abs(k + t[i][j])]
-                    if abs(k - t[i][j]) < bool_width:
-                        dp[i][j][k] |= dp[i][j - 1][abs(k - t[i][j])]
-    for i, e in enumerate(dp[-1][-1]):
-        if e:
-            print(i)
-            break
+
+def p_e():
+    from itertools import product
+    h, w = map(int, input().split())
+    t1 = [list(map(int, input().split())) for _ in range(h)]
+    t2 = [list(map(int, input().split())) for _ in range(h)]
+
+    # pythonでbitsetを用いる->boolのDPで2進数の1をTrue, 0をFalseとして扱う
+    # 右にxシフト = その値にx足した値    (10001)<<4 -> (100010000)
+    m = 160 * 80
+    dp = [[0] * w for _ in range(h)]
+    dp[0][0] = 1 << m
+    for i, j in product(range(h), range(w)):
+        v = abs(t1[i][j] - t2[i][j])
+        if i > 0:
+            dp[i][j] |= dp[i - 1][j]
+        if j > 0:
+            dp[i][j] |= dp[i][j - 1]
+        dp[i][j] = (dp[i][j] << v) | (dp[i][j] >> v)
+
+    ans = m
+    for i in range(m * 2):
+        if dp[h - 1][w - 1] & (1 << i) > 0:
+            ans = min(ans, abs(m - i))
+    print(ans)
 
 
 def p_f():

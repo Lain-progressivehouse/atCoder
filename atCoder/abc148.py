@@ -73,18 +73,11 @@ def p_f():
 
     dist_v = BFS(v - 1, edges, N)
     dist_u = BFS(u - 1, edges, N)
-    # print(dist_v)
-    # print(dist_u)
-    max_dist = max(dist_v)
-    maxIndex = [i for i, x in enumerate(dist_v) if x == max_dist]
-    for i in maxIndex:
-        if max_dist > dist_u[i]:
-            print(max(dist_v) - 1)
-            exit()
-    if dist_v[u - 1] > max_dist - dist_v[u - 1]:
-        print(max_dist - 1)
-    else:
-        print(dist_v[u - 1] - 1)
+    ans = 0
+    for du, dv in zip(dist_u, dist_v):
+        if du < dv and ans < dv - 1:
+            ans = dv - 1
+    print(ans)
 
 
 if __name__ == '__main__':

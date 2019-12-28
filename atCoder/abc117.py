@@ -58,5 +58,21 @@ def p_dd():
     print(ans)
 
 
+def p_dp():
+    n, k = map(int, input().split())
+    *A, = map(int, input().split())
+
+    size = (len(bin(max(A + [k]))) - 2)
+    bits = [0] * size
+    for a in A:
+        for i in range(len(bin(a)) - 2):
+            bits[i] += a >> i & 1
+
+    # dp[i][j]: 上位iビットまで見たときに、k以下であることが(j?確定:未確定)であるときの最大値
+    dp = [[0] * 2 for _ in range(40)]
+
+    # for i in range(40)
+
+
 if __name__ == '__main__':
-    p_dd()
+    p_dp()

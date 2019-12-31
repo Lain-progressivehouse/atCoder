@@ -61,13 +61,41 @@ def p_d():
 
 
 def p_e():
-    import numpy as np
+    from itertools import accumulate
     n, m = map(int, input().split())
-    A = np.array(list(map(int, input().split())))
-    x = np.array([])
-    for i in range(n):
-        x = np.hstack((x, A + np.roll(A, i)))
-    print(np.sum(np.sort(x)[::-1][:m], dtype=np.int))
+    *A, = map(int, input().split())
+    A.sort(reverse=True)
+    ls = [0] * 10 ** 6
+    for a in A:
+        ls[a + 1] += 1
+    ls = list(accumulate(ls))
+
+    def check(x):
+        res = 0
+        for a in A:
+            res += n - ls[max(0, x - a)]
+        return res
+
+    up = 10 ** 6
+    down = 0
+    while True:
+        mid = (up + down) // 2
+        if check(mid) >= m:
+            if down == mid:
+                break
+            down = mid
+        else:
+            if up == mid:
+                if check(up) == m:
+                    mid == up
+                break
+            up = mid
+    acc_ls = list(accumulate([0] + A))
+    ans = 0
+    for a in A:
+        x = n - ls[max(0, mid - a)]
+        ans += x * a + acc_ls[x]
+    print(ans - (check(mid) - m) * mid)
 
 
 def p_f():

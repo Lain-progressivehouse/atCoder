@@ -31,6 +31,11 @@ def p_c():
 
 
 def p_d():
+    """
+    あみだくじ
+    動的計画法で解く。wからwに行く遷移はフィボナッチ数列から求まる
+    :return:
+    """
     H, W, K = map(int, input().split())
     mod = 10 ** 9 + 7
     dp = [0] * W
